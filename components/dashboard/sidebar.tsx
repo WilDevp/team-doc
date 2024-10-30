@@ -1,12 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { ScrollText, Layout, Settings, LogOut } from 'lucide-react'
 
 export function Sidebar() {
     const pathname = usePathname()
+    const router = useRouter()
 
     const navigation = [
         {
@@ -25,6 +27,10 @@ export function Sidebar() {
             icon: Settings,
         },
     ]
+
+    const handleSignOut = async () => {
+        await signOut({ redirect: true, callbackUrl: '/' })
+    }
 
     return (
         <div className="w-64 border-r bg-background p-4 flex flex-col h-full">
@@ -47,7 +53,11 @@ export function Sidebar() {
                     )
                 })}
             </nav>
-            <Button variant="ghost" className="justify-start text-red-500 hover:text-red-600 hover:bg-red-50">
+            <Button
+                variant="ghost"
+                className="justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
+                onClick={handleSignOut}
+            >
                 <LogOut className="mr-2 h-4 w-4" />
                 Cerrar sesión
             </Button>

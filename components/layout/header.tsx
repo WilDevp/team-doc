@@ -15,8 +15,12 @@ export function Header() {
                     <Link href="#pricing" className="text-muted-foreground hover:text-primary">
                         Precios
                     </Link>
-                    <Button variant="outline">Iniciar sesión</Button>
-                    <Button>Registrarse</Button>
+                    <Link href="/login">
+                        <Button variant="outline">Iniciar sesión</Button>
+                    </Link>
+                    <Link href="/register">
+                        <Button>Registrarse</Button>
+                    </Link>
                 </nav>
             </div>
         </header>
