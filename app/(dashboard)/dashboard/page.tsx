@@ -1,14 +1,52 @@
 'use client'
 
-import { useAuth } from '@/hooks/use-auth'
+import { useEffect, useState } from 'react'
 import { DocumentList } from '@/components/dashboard/document-list'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Plus, Users, FileText, Share2 } from 'lucide-react'
-import Link from 'next/link'
+import { CreateDocument } from '@/components/dashboard/create-document'
+import { useAuth } from '@/hooks/use-auth'
+import { Card } from '@/components/ui/card'
+import { Users, FileText, Share2 } from 'lucide-react'
+import { toast } from 'sonner'
+
+interface Stats {
+    totalUsers: number
+    totalDocuments: number
+    sharedDocuments: number
+}
 
 export default function DashboardPage() {
     const { isAdmin } = useAuth()
+    const [stats, setStats] = useState<Stats>({
+        totalUsers: 0,
+        totalDocuments: 0,
+        sharedDocuments: 0,
+    })
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                setIsLoading(true)
+                const response = await fetch('/api/stats')
+
+                if (!response.ok) {
+                    throw new Error('Error al obtener estadísticas')
+                }
+
+                const data = await response.json()
+                setStats(data)
+            } catch (error) {
+                console.error('Error fetching stats:', error)
+                toast.error('Error al cargar las estadísticas')
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        if (isAdmin) {
+            fetchStats()
+        }
+    }, [isAdmin])
 
     return (
         <div className="p-6 space-y-6">
@@ -16,51 +54,52 @@ export default function DashboardPage() {
                 <h1 className="text-3xl font-bold">
                     {isAdmin ? 'Panel de administración' : 'Mi espacio de trabajo'}
                 </h1>
-                <Link href="/documents/new">
-                    <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Nuevo documento
-                    </Button>
-                </Link>
+                <CreateDocument />
             </div>
 
-            {isAdmin ? (
+            {isAdmin && (
                 <div className="grid gap-4 md:grid-cols-3">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Total Usuarios
-                            </CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">24</div>
-                        </CardContent>
+                    <Card className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-muted-foreground">
+                                    Total Usuarios
+                                </p>
+                                <p className="text-2xl font-bold">
+                                    {isLoading ? '...' : stats.totalUsers}
+                                </p>
+                            </div>
+                            <Users className="h-8 w-8 text-muted-foreground" />
+                        </div>
                     </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Documentos Creados
-                            </CardTitle>
-                            <FileText className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">142</div>
-                        </CardContent>
+                    <Card className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-muted-foreground">
+                                    Documentos Creados
+                                </p>
+                                <p className="text-2xl font-bold">
+                                    {isLoading ? '...' : stats.totalDocuments}
+                                </p>
+                            </div>
+                            <FileText className="h-8 w-8 text-muted-foreground" />
+                        </div>
                     </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Documentos Compartidos
-                            </CardTitle>
-                            <Share2 className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">89</div>
-                        </CardContent>
+                    <Card className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-muted-foreground">
+                                    Documentos Compartidos
+                                </p>
+                                <p className="text-2xl font-bold">
+                                    {isLoading ? '...' : stats.sharedDocuments}
+                                </p>
+                            </div>
+                            <Share2 className="h-8 w-8 text-muted-foreground" />
+                        </div>
                     </Card>
                 </div>
-            ) : null}
+            )}
 
             <div className="space-y-4">
                 <h2 className="text-xl font-semibold">

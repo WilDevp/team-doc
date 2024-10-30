@@ -7,6 +7,39 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Message {
+  id         String   @id @default(cuid())
+  content    String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  content    String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id])
+  position   Json // { start: number, end: number }
+  createdAt  DateTime @default(now())
+}
+
+model DocumentVersion {
+  id         String   @id @default(cuid())
+  content    String   @db.Text
+  title      String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id])
+  changes    String[]
+  createdAt  DateTime @default(now())
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -35,28 +68,36 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  role          String     @default("USER")
-  accounts      Account[]
-  sessions      Session[]
-  documents     Document[]
+  id               String            @id @default(cuid())
+  name             String?
+  email            String?           @unique
+  emailVerified    DateTime?
+  password         String?
+  image            String?
+  role             String            @default("USER")
+  accounts         Account[]
+  sessions         Session[]
+  ownedDocuments   Document[]        @relation("DocumentOwner")
+  messages         Message[]
+  comments         Comment[]
+  documentVersions DocumentVersion[]
+  collaboratingOn  Document[]        @relation("DocumentCollaborators")
 }
 
 model Document {
-  id        String   @id @default(cuid())
-  title     String
-  content   String   @db.Text
-  published Boolean  @default(false)
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  tags      Tag[]
+  id            String            @id @default(cuid())
+  title         String
+  content       String            @db.Text
+  published     Boolean           @default(false)
+  authorId      String
+  author        User              @relation("DocumentOwner", fields: [authorId], references: [id])
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  tags          Tag[]
+  messages      Message[]
+  comments      Comment[]
+  versions      DocumentVersion[]
+  collaborators User[]            @relation("DocumentCollaborators")
 }
 
 model Tag {
