@@ -20,14 +20,17 @@ export async function POST(request: NextRequest) {
             data: {
                 title,
                 content: content || '',
-                authorId: session.user.id,
+                author: {
+                    connect: { id: session.user.id }
+                },
             },
             include: {
                 author: {
                     select: {
+                        id: true,
                         name: true,
                         email: true,
-                        image: true,
+                        role: true,
                     },
                 },
             },
@@ -63,9 +66,10 @@ export async function GET(request: NextRequest) {
             include: {
                 author: {
                     select: {
+                        id: true,
                         name: true,
                         email: true,
-                        image: true,
+                        role: true,
                     },
                 },
             },
