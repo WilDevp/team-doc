@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,8 +12,11 @@ import Link from 'next/link'
 
 export function LoginForm() {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
+    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
+    const registered = searchParams.get('registered')
 
     async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -20,18 +24,24 @@ export function LoginForm() {
         setError('')
 
         const formData = new FormData(event.currentTarget)
-        const email = formData.get('email')
-        const password = formData.get('password')
+        const email = formData.get('email') as string
+        const password = formData.get('password') as string
 
-        // Aquí implementarías la lógica real de autenticación
         try {
-            // Simular una llamada a la API
-            await new Promise(resolve => setTimeout(resolve, 1000))
+            const result = await signIn('credentials', {
+                email,
+                password,
+                redirect: false,
+            })
 
-            // Redirigir al dashboard después del login exitoso
-            router.push('/dashboard')
+            if (result?.error) {
+                setError('Credenciales inválidas')
+                return
+            }
+
+            router.push(callbackUrl)
         } catch (error) {
-            setError('Credenciales inválidas. Por favor intenta de nuevo.')
+            setError('Ocurrió un error al iniciar sesión')
         } finally {
             setIsLoading(false)
         }
@@ -47,6 +57,13 @@ export function LoginForm() {
             </CardHeader>
             <form onSubmit={onSubmit}>
                 <CardContent className="space-y-4">
+                    {registered && (
+                        <Alert>
+                            <AlertDescription>
+                                Cuenta creada exitosamente. Por favor, inicia sesión.
+                            </AlertDescription>
+                        </Alert>
+                    )}
                     {error && (
                         <Alert variant="destructive">
                             <AlertDescription>{error}</AlertDescription>
@@ -58,7 +75,6 @@ export function LoginForm() {
                             id="email"
                             name="email"
                             type="email"
-                            placeholder="tu@ejemplo.com"
                             required
                             disabled={isLoading}
                         />

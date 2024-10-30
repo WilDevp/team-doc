@@ -20,24 +20,31 @@ export function RegisterForm() {
         setError('')
 
         const formData = new FormData(event.currentTarget)
-        const email = formData.get('email')
-        const password = formData.get('password')
-        const confirmPassword = formData.get('confirmPassword')
-
-        if (password !== confirmPassword) {
-            setError('Las contraseñas no coinciden')
-            setIsLoading(false)
-            return
-        }
+        const email = formData.get('email') as string
+        const password = formData.get('password') as string
+        const name = formData.get('name') as string
 
         try {
-            // Simular una llamada a la API
-            await new Promise(resolve => setTimeout(resolve, 1000))
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    name,
+                }),
+            })
 
-            // Redirigir al dashboard después del registro exitoso
-            router.push('/dashboard')
-        } catch (error) {
-            setError('Error al crear la cuenta. Por favor intenta de nuevo.')
+            if (!res.ok) {
+                const data = await res.json()
+                throw new Error(data.error || 'Error al registrar usuario')
+            }
+
+            router.push('/login?registered=true')
+        } catch (err) {
+            setError((err as Error).message)
         } finally {
             setIsLoading(false)
         }
@@ -59,12 +66,21 @@ export function RegisterForm() {
                         </Alert>
                     )}
                     <div className="space-y-2">
+                        <Label htmlFor="name">Nombre</Label>
+                        <Input
+                            id="name"
+                            name="name"
+                            type="text"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <div className="space-y-2">
                         <Label htmlFor="email">Correo electrónico</Label>
                         <Input
                             id="email"
                             name="email"
                             type="email"
-                            placeholder="tu@ejemplo.com"
                             required
                             disabled={isLoading}
                         />
@@ -74,16 +90,6 @@ export function RegisterForm() {
                         <Input
                             id="password"
                             name="password"
-                            type="password"
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
-                        <Input
-                            id="confirmPassword"
-                            name="confirmPassword"
                             type="password"
                             required
                             disabled={isLoading}
