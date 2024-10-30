@@ -10,28 +10,36 @@ export async function POST(
     try {
         const session = await getServerSession(authOptions)
         if (!session?.user) {
-            return new NextResponse('Unauthorized', { status: 401 })
+            return new NextResponse('No autorizado', { status: 401 })
         }
 
         const documentId = await Promise.resolve(context.params.id)
         const { email } = await request.json()
 
-        if (!documentId || !email) {
-            return new NextResponse('Document ID and email are required', { status: 400 })
+        if (!documentId) {
+            return new NextResponse('ID del documento es requerido', { status: 400 })
         }
 
-        // Verificar si el documento existe y el usuario tiene permisos
+        if (!email) {
+            return new NextResponse('Email es requerido', { status: 400 })
+        }
+
+        // Verificar si el documento existe
         const document = await prisma.document.findUnique({
             where: { id: documentId },
-            include: { author: true, collaborators: true },
+            include: {
+                author: true,
+                collaborators: true,
+            },
         })
 
         if (!document) {
-            return new NextResponse('Document not found', { status: 404 })
+            return new NextResponse('Documento no encontrado', { status: 404 })
         }
 
+        // Verificar si el usuario actual es el autor
         if (document.authorId !== session.user.id) {
-            return new NextResponse('Not authorized to share this document', { status: 403 })
+            return new NextResponse('No tienes permiso para compartir este documento', { status: 403 })
         }
 
         // Buscar el usuario con quien se quiere compartir
@@ -40,16 +48,21 @@ export async function POST(
         })
 
         if (!userToShare) {
-            return new NextResponse('User not found', { status: 404 })
+            return new NextResponse('Usuario no encontrado', { status: 404 })
         }
 
-        // Verificar si ya está compartido con este usuario
+        // Verificar que no se esté compartiendo con el autor
+        if (userToShare.id === document.authorId) {
+            return new NextResponse('No puedes compartir el documento contigo mismo', { status: 400 })
+        }
+
+        // Verificar si ya está compartido
         const isAlreadyShared = document.collaborators.some(
             (collaborator) => collaborator.id === userToShare.id
         )
 
         if (isAlreadyShared) {
-            return new NextResponse('Document already shared with this user', { status: 400 })
+            return new NextResponse('El documento ya está compartido con este usuario', { status: 400 })
         }
 
         // Compartir el documento
@@ -74,6 +87,6 @@ export async function POST(
         return NextResponse.json(updatedDocument)
     } catch (error) {
         console.error('Error sharing document:', error)
-        return new NextResponse('Internal Server Error', { status: 500 })
+        return new NextResponse('Error al compartir el documento', { status: 500 })
     }
 }

@@ -26,7 +26,15 @@ export function ShareDialog({ documentId }: ShareDialogProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     const handleShare = async () => {
-        if (!email) return
+        if (!email) {
+            toast.error('Por favor ingresa un correo electrónico')
+            return
+        }
+
+        if (!documentId) {
+            toast.error('ID del documento no válido')
+            return
+        }
 
         setIsLoading(true)
         try {
@@ -39,20 +47,24 @@ export function ShareDialog({ documentId }: ShareDialogProps) {
             })
 
             if (!response.ok) {
-                const error = await response.text()
-                throw new Error(error)
+                const errorData = await response.text()
+                throw new Error(errorData || 'Error al compartir el documento')
             }
 
             const data = await response.json()
             toast.success(`Documento compartido con ${email}`)
             setIsOpen(false)
             setEmail('')
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error sharing document:', error)
             toast.error(error.message || 'Error al compartir el documento')
         } finally {
             setIsLoading(false)
         }
+    }
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value.trim())
     }
 
     return (
@@ -78,7 +90,8 @@ export function ShareDialog({ documentId }: ShareDialogProps) {
                             type="email"
                             placeholder="correo@ejemplo.com"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={handleEmailChange}
+                            disabled={isLoading}
                         />
                     </div>
                 </div>
