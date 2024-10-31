@@ -15,12 +15,8 @@ export default function RootLayout({
         <html lang="es">
         <body className={inter.className}>
         <NextAuthProvider>
-            <main className="flex-1 overflow-y-auto bg-muted/50">
-                <div className="p-4 flex justify-end">
-                    <NotificationBell/>
-                </div>
                 {children}
-            </main>
+
         </NextAuthProvider>
         </body>
         </html>

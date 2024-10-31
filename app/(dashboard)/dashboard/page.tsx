@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card'
 import { Users, FileText, Share2, User } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {NotificationBell} from "@/components/layout/notification-bell";
 
 interface Stats {
     totalUsers: number
@@ -54,13 +55,16 @@ export default function DashboardPage() {
                     </h1>
                     <Badge variant={isAdmin ? "default" : "secondary"} className="h-6">
                         {isAdmin ? (
-                            <><User className="w-3 h-3 mr-1" />Admin</>
+                            <><User className="w-3 h-3 mr-1"/>Admin</>
                         ) : (
-                            <><User className="w-3 h-3 mr-1" />Usuario</>
+                            <><User className="w-3 h-3 mr-1"/>Usuario</>
                         )}
                     </Badge>
                 </div>
-                <CreateDocument />
+                <CreateDocument/>
+                <div className="p-4 flex justify-end">
+                    <NotificationBell/>
+                </div>
             </div>
 
             {isAdmin && (
