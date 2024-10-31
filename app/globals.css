@@ -96,3 +96,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
