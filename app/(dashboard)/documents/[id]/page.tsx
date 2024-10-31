@@ -77,8 +77,11 @@ export default function DocumentPage() {
         }
     }
 
-    const handleMention = (user: { name: string }) => {
-        setContent(prevContent => `${prevContent} @${user.name} `)
+    const handleMention = (user: { name: string; id: string }) => {
+        setContent(prevContent => {
+            const mention = `@${user.name}{${user.id}} `
+            return prevContent + mention
+        })
     }
 
     if (isLoading) {
@@ -96,9 +99,9 @@ export default function DocumentPage() {
                     className="text-2xl font-bold w-[300px]"
                 />
                 <div className="flex items-center space-x-2">
-                    <Mentions onMention={handleMention} />
-                    <VersionHistory />
-                    <ShareDialog documentId={documentId} />
+                    <Mentions onMention={handleMention}/>
+                    <VersionHistory/>
+                    <ShareDialog documentId={documentId}/>
                     <Button onClick={handleSave}>Guardar</Button>
                 </div>
             </div>
