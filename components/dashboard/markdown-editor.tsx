@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -111,19 +112,26 @@ export function MarkdownEditor({
                     </Button>
                 ))}
             </div>
-            <Textarea
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                className="min-h-[500px] font-mono"
-                placeholder="Escribe tu documento en Markdown..."
-                onSelect={(e) => {
-                    const target = e.target as HTMLTextAreaElement
-                    setSelection({
-                        start: target.selectionStart,
-                        end: target.selectionEnd,
-                    })
-                }}
-            />
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <Textarea
+                        value={value}
+                        onChange={(e) => onChange(e.target.value)}
+                        className="min-h-[500px] font-mono"
+                        placeholder="Escribe tu documento en Markdown..."
+                        onSelect={(e) => {
+                            const target = e.target as HTMLTextAreaElement
+                            setSelection({
+                                start: target.selectionStart,
+                                end: target.selectionEnd,
+                            })
+                        }}
+                    />
+                </div>
+                <div className="border rounded-md p-4 overflow-auto max-h-[500px]">
+                    <ReactMarkdown>{value}</ReactMarkdown>
+                </div>
+            </div>
         </div>
     )
 }
