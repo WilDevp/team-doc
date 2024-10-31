@@ -5,18 +5,15 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 export async function GET(
     request: NextRequest,
-    context: { params: { id: string } }
+    { params }: { params: { id: string } }
 ) {
     try {
         const session = await getServerSession(authOptions)
         if (!session?.user) {
-            return new NextResponse('Unauthorized', { status: 401 })
+            return new NextResponse('No autorizado', { status: 401 })
         }
 
-        const documentId = await Promise.resolve(context.params.id)
-        if (!documentId) {
-            return new NextResponse('Document ID is required', { status: 400 })
-        }
+        const documentId = await Promise.resolve(params.id)
 
         const messages = await prisma.message.findMany({
             where: {
@@ -39,6 +36,6 @@ export async function GET(
         return NextResponse.json(messages)
     } catch (error) {
         console.error('Error al obtener mensajes:', error)
-        return new NextResponse('Internal Server Error', { status: 500 })
+        return new NextResponse('Error interno del servidor', { status: 500 })
     }
 }
