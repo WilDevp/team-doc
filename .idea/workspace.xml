@@ -7,7 +7,8 @@
     <list default="true" id="3ec13829-b6f0-405b-8eee-2427846ce55d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(dashboard)/documents/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/documents/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/document/mentions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/document/mentions.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +86,7 @@
       <workItem from="1730321442315" duration="2377000" />
       <workItem from="1730324062246" duration="978000" />
       <workItem from="1730325458293" duration="11125000" />
-      <workItem from="1730347026858" duration="877000" />
+      <workItem from="1730347026858" duration="1606000" />
     </task>
     <servers />
   </component>
