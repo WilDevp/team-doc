@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import {
@@ -30,11 +30,11 @@ export function Sidebar() {
             href: '/admin/users',
             icon: Users,
         },
-        {
+      /*  {
             name: 'Documentos',
             href: '/documents',
             icon: ScrollText,
-        },
+        },*/
         {
             name: 'Reportes',
             href: '/admin/reports',
@@ -53,11 +53,11 @@ export function Sidebar() {
             href: '/dashboard',
             icon: FileText,
         },
-        {
+        /*{
             name: 'Documentos compartidos',
             href: '/documents/shared',
             icon: ScrollText,
-        },
+        },*/
         {
             name: 'Configuración',
             href: '/settings',

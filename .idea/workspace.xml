@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="3ec13829-b6f0-405b-8eee-2427846ce55d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dashboard/markdown-editor.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/dashboard/markdown-editor.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(dashboard)/documents/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/documents/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/documents/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/documents/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/layout/sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/layout/sidebar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
